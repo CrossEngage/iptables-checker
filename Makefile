@@ -2,7 +2,7 @@ APPNAME   := iptables-checker
 DIST_DIR  := ./dist
 PLATFORMS := linux-386 linux-amd64 linux-arm
 
-RELEASE    = $(shell git describe --all --always)
+RELEASE   := $(shell git describe --all --always)
 
 build:
 	go test -v ./...
