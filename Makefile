@@ -5,6 +5,8 @@ PLATFORMS := linux-386 linux-amd64 linux-arm
 RELEASE   := $(shell git describe --all --always)
 
 build:
+	go generate
+	go get -v -t ./...
 	go test -v ./...
 	go build -v
 

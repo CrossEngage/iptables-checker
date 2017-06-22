@@ -2,6 +2,7 @@ g_*.go
 /dist/
 
 # Binaries for programs and plugins
+iptables-checker
 *.exe
 *.dll
 *.so
