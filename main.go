@@ -27,7 +27,6 @@ func main() {
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
 	slog, err := syslog.New(syslog.LOG_NOTICE|syslog.LOG_DAEMON, appName)
-
 	if err != nil {
 		log.Fatal(err)
 	}
