@@ -19,7 +19,7 @@ var (
 	checkName  = app.Flag("name", "check name").Default(appName).String()
 	chains     = app.Arg("chains", "iptables chains to monitor").Required().Strings()
 	ipVBin     = map[string]string{"v4": "iptables", "v6": "ip6tables"}
-	syslog     = app.Flag("syslog", "if set, logs stderr into syslog").Default("false").Bool()
+	syslogging = app.Flag("syslog", "if set, logs stderr into syslog").Default("false").Bool()
 )
 
 func main() {
@@ -32,7 +32,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if *syslog {
+	if *syslogging {
 		log.SetOutput(slog)
 	}
 
@@ -49,7 +49,7 @@ func main() {
 			}
 
 			outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
-			if *syslog {
+			if *syslogging {
 				slog.Debug(fmt.Sprintf("%s: stdout `%s`, stderr `%s`", bin, outStr, errStr))
 			}
 
