@@ -4,15 +4,12 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"gopkg.in/alecthomas/kingpin.v1"
+	"log"
 	"log/syslog"
 	"os"
-	"path"
-
 	"os/exec"
-
-	"log"
-
-	"gopkg.in/alecthomas/kingpin.v1"
+	"path"
 )
 
 var (
@@ -22,6 +19,7 @@ var (
 	checkName  = app.Flag("name", "check name").Default(appName).String()
 	chains     = app.Arg("chains", "iptables chains to monitor").Required().Strings()
 	ipVBin     = map[string]string{"v4": "iptables", "v6": "ip6tables"}
+	syslogging = app.Flag("syslog", "if set, logs stderr into syslog").Default("false").Bool()
 )
 
 func main() {
@@ -32,7 +30,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.SetOutput(slog)
+
+	if *syslogging {
+		log.SetOutput(slog)
+	}
 
 	for _, chain := range *chains {
 		for _, ipv := range *ipVersions {
@@ -47,7 +48,9 @@ func main() {
 			}
 
 			outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
-			slog.Debug(fmt.Sprintf("%s: stdout `%s`, stderr `%s`", bin, outStr, errStr))
+			if *syslogging {
+				slog.Debug(fmt.Sprintf("%s: stdout `%s`, stderr `%s`", bin, outStr, errStr))
+			}
 
 			c, err := newChainInfo(outStr)
 			if err != nil {
